@@ -12,17 +12,30 @@ import { Router, Scene } from 'react-native-router-flux'
 import LandingPage from './screens/LandingPage';
 import LoginPage from './screens/Login';
 import RegistrationPage from './screens/RegistrationPage';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
+const Stack = createStackNavigator();
 const App = () => {
 
   return (
-<Router>
-      <Scene key="root">
-        <Scene key="landing" component={LandingPage} title="Landing" initial={true} />
-        <Scene key="login" component={LoginPage} title="Login" />
-        <Scene key="registration" component={RegistrationPage} title="Registration" />
-      </Scene>
-    </Router>  );
+
+   
+
+    <NavigationContainer>
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Home"
+        component={LandingPage}
+      />
+      <Stack.Screen
+        name="Friends"
+        component={LoginPage}
+      />
+    </Stack.Navigator>
+      </NavigationContainer >
+      
+    );
 };
 
 export default App;
