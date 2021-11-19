@@ -19,23 +19,19 @@ const Stack = createStackNavigator();
 const App = () => {
 
   return (
-
-   
-
     <NavigationContainer>
-    <Stack.Navigator>
-      <Stack.Screen
-        name="Home"
-        component={LandingPage}
-      />
-      <Stack.Screen
-        name="Friends"
-        component={LoginPage}
-      />
-    </Stack.Navigator>
-      </NavigationContainer >
-      
-    );
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Home"
+          component={LandingPage}
+        />
+        <Stack.Screen
+          name="Friends"
+          component={LoginPage}
+        />
+      </Stack.Navigator>
+    </NavigationContainer >
+  );
 };
 
 export default App;

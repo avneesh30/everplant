@@ -1,6 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
-import { View, Text, StyleSheet, Button, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const image = { uri: "https://i.pinimg.com/236x/a0/66/b2/a066b2cf7d122212317517c353f6df87.jpg" }
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     paddingTop: 0,
     fontFamily: 'AbrilFatface-Regular',
   },
-  text5:{
+  text5: {
     marginTop: 110,
     color: '#fff',
     fontSize: 4,
