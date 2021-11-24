@@ -7,31 +7,41 @@
  */
 
 import React from 'react';
-import { View, Text, Button } from 'react-native';
-import { Router, Scene } from 'react-native-router-flux'
 import LandingPage from './screens/LandingPage';
 import LoginPage from './screens/Login';
 import RegistrationPage from './screens/RegistrationPage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
+
+
 const Stack = createStackNavigator();
-const App = () => {
+
+const App = (props) => {
 
   return (
+
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
-          name="Home"
+          name="home"
           component={LandingPage}
+          options={{ title: '', headerShown: false }}
         />
         <Stack.Screen
-          name="Friends"
+          name="login"
           component={LoginPage}
+          options={{ title: '', headerShown: false }}
+        />
+         <Stack.Screen
+          name="signup"
+          component={RegistrationPage}
+          options={{ title: '', headerShown: false }}
         />
       </Stack.Navigator>
-    </NavigationContainer >
+    </NavigationContainer>
   );
 };
 
 export default App;
+
