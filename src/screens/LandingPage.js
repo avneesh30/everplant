@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     alignContent: 'flex-start',
-    fontFamily: 'Montserrat-Black',
+    fontFamily: 'Montserrat-BoldItalic',
     margin: 0
   },
   subHeading:{
