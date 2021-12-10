@@ -9,7 +9,7 @@
 import React from 'react';
 import LandingPage from './screens/LandingPage';
 import LoginPage from './screens/Login';
-import RegistrationPage from './screens/RegistrationPage';
+import SignUp from './screens/SignUp';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -35,7 +35,7 @@ const App = (props) => {
         />
          <Stack.Screen
           name="signup"
-          component={RegistrationPage}
+          component={SignUp}
           options={{ title: '', headerShown: false }}
         />
       </Stack.Navigator>

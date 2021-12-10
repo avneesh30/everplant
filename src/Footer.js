@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         bottom: 0,
-        height: 80
+        height: 70
     },
     footColor: {
         color: 'black',

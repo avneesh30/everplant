@@ -1,15 +1,14 @@
-import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
 import { View, Text, StyleSheet, ImageBackground } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Footer } from '../Footer';
 
 const image = { uri: "https://i.pinimg.com/236x/a0/66/b2/a066b2cf7d122212317517c353f6df87.jpg" }
- 
+
 const LandingPage = (props) => {
   return (
     <View style={styles.container}>
-    <ImageBackground source={image} resizeMode="cover" style={styles.image}>
+      <ImageBackground source={require('../images/landing.jpg')} resizeMode="cover" style={styles.image}>
         <View style={styles.heading}>
           <Text style={styles.text1}>Ever</Text>
           <Text style={styles.text2}>PLANT</Text>
@@ -38,10 +37,9 @@ const LandingPage = (props) => {
           <Text style={styles.text6}>in India. Our online nursery collection includes Annual Flowers, Aromatic and Aquatic Plants,</Text>
           <Text style={styles.text7}>Cactii, Bonsai, Ferns, Indoor and Outdoor Plants etc.</Text>
         </View>
-    </ImageBackground>
-    <Footer />
+      </ImageBackground>
+      <Footer />
     </View>
-
   );
 }
 
@@ -53,18 +51,18 @@ const styles = StyleSheet.create({
   heading: {
     color: '#ACACAC',
     flexDirection: 'row',
-    marginBottom:110,
-    marginTop:0,
+    marginBottom: 110,
+    marginTop: 0,
   },
   buttonContainer1: {
     marginLeft: 75,
     width: 220,
     height: 50,
     marginTop: -15,
-    marginBottom:80,
+    marginBottom: 80,
     backgroundColor: 'rgba(175, 238, 238, 0.4)',
     paddingLeft: 70,
-    paddingTop:13,
+    paddingTop: 13,
     paddingRight: 90,
   },
   buttonText1: {
@@ -74,7 +72,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer2: {
     marginLeft: 75,
-    marginBottom:90,
+    marginBottom: 90,
     marginTop: -25,
     width: 220,
     height: 50,
@@ -103,8 +101,8 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat-BoldItalic',
     margin: 0
   },
-  subHeading:{
-    marginTop:-60,
+  subHeading: {
+    marginTop: -60,
     marginBottom: 130
   },
   text3: {
@@ -120,7 +118,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     paddingLeft: 40,
   },
-  bottomText:{
+  bottomText: {
     marginTop: -80,
     marginBottom: 100
   },
@@ -135,7 +133,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     marginLeft: 70
   },
-  text7:{
+  text7: {
     fontSize: 4,
     color: '#fff',
     marginLeft: 120

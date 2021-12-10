@@ -5,7 +5,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Footer } from '../Footer';
 
-const image = { uri: "https://i.pinimg.com/originals/c2/f2/f6/c2f2f63868aa3d12c1b4519dc0f42fac.jpg"}
+const image = { uri: "https://i.pinimg.com/originals/c2/f2/f6/c2f2f63868aa3d12c1b4519dc0f42fac.jpg" }
 
 const loginValidation = Yup.object().shape({
     Email: Yup.string()
@@ -15,81 +15,78 @@ const loginValidation = Yup.object().shape({
     Password: Yup.string()
         .required('Please enter your Password')
         .min(8, 'Password is too short - should be 8 characters minimum.')
-        .max(13, 'Password is too long - should be 13 characters maximum')
+        .max(15, 'Password is too long - should be 13 characters maximum')
 });
 
-const LoginPage = () => {
+const LoginPage = (props) => {
 
     return (
         <View style={styles.loginContainer}>
-                <ImageBackground source={image} resizeMode="cover" style={styles.image}>
+            <ImageBackground source={require('../images/login.jpg')} resizeMode="cover" style={styles.image}>
+                <View style={styles.heading}>
+                    <Text style={styles.loginRegisterHeading}>Welcome</Text>
+                    <Text style={styles.loginRegisterHeading1}>Log</Text>
+                    <Text style={styles.loginRegisterHeading2}>In</Text>
+                </View>
+                <Formik
+                    initialValues={{
+                        Email: '',
+                        Password: '',
+                    }}
+                    validationSchema={loginValidation}
+                    onSubmit={(values) => {
+                        console.log(values, "users");
+                        setTimeout(() => {
+                            alert('User registered successfully')
+                        }, 500)
+                    }}
+                >
+                    {({ errors, values, touched, handleSubmit, setFieldValue }) => {
+                        console.log(values, 'values')
 
-            <View style={styles.heading}>
-                <Text style={styles.loginRegisterHeading}>Welcome</Text>
-                <Text style={styles.loginRegisterHeading1}>Log</Text>
-                <Text style={styles.loginRegisterHeading2}>In</Text>
-            </View>
-            <Formik
-                initialValues={{
-                    Email: '',
-                    Password: '',
-                }}
-                validationSchema={loginValidation}
-                onSubmit={(values) => {
-                    console.log(values, "users");
-                    setTimeout(() => {
-                        alert('User registered successfully')
-                    }, 500)
-                }}
-            >
-                {({ errors, values, touched, handleSubmit, setFieldValue }) => {
-                    console.log(values, 'values')
+                        return <View style={styles.mainContainer}>
 
-                    return <View style={styles.mainContainer}>
-
-                        <View style={styles.container}>
-                            <TextInput
-                                style={styles.emailInput}
-                                placeholder="Email"
-                                placeholderTextColor="#EEEEEE"
-                                value={values.Email}
-                                name="Email"
-                                onChangeText={(text) => setFieldValue('Email', text)}
+                            <View style={styles.container}>
+                                <TextInput
+                                    style={styles.emailInput}
+                                    placeholder="Email"
+                                    placeholderTextColor="#EEEEEE"
+                                    value={values.Email}
+                                    name="Email"
+                                    onChangeText={(text) => setFieldValue('Email', text)}
                                 />
-                            {errors.Email && touched.Email &&
-                                <Text style={styles.error}>{errors.Email}</Text>
-                            }
-                            <TextInput
-                                style={styles.passwordInput}
-                                placeholder="Password"
-                                placeholderTextColor="#EEEEEE"
-                                value={values.Password}
-                                name="Password"
-                                onChangeText={(text) => setFieldValue('Password', text)}                             
-                            />
-                            {errors.Password && touched.Password &&
-                                <Text style={styles.error}> {errors.Password}</Text>
-                            }
-                            <View style={styles.buttonContainer1}>
-                                <TouchableOpacity onPress={handleSubmit}>
-                                <Text style={styles.buttonText1}>
-                                    Log In
-                                </Text>
-                            </TouchableOpacity>
+                                {errors.Email && touched.Email &&
+                                    <Text style={styles.error}>{errors.Email}</Text>
+                                }
+                                <TextInput
+                                    style={styles.passwordInput}
+                                    placeholder="Password"
+                                    placeholderTextColor="#EEEEEE"
+                                    value={values.Password}
+                                    name="Password"
+                                    onChangeText={(text) => setFieldValue('Password', text)}
+                                />
+                                {errors.Password && touched.Password &&
+                                    <Text style={styles.error}> {errors.Password}</Text>
+                                }
+                                <View style={styles.buttonContainer1}>
+                                    <TouchableOpacity onPress={handleSubmit}>
+                                        <Text style={styles.buttonText1}>
+                                            Log In
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={styles.buttonContainer2}>
+                                    <TouchableOpacity onPress={() => props.navigation.navigate("home")}>
+                                        <Text style={styles.buttonText2}>
+                                            Back To Home
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
-                            <View style={styles.buttonContainer2}>
-                            <TouchableOpacity>
-                                <Text style={styles.buttonText2}>
-                                    Back To Home
-                                </Text>
-                            </TouchableOpacity>
-                            </View>
-                            
-                                
                         </View>
-                    </View>
-                }}
-            </Formik>
+                    }}
+                </Formik>
             </ImageBackground>
             <Footer />
         </View>
@@ -101,7 +98,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#f5fffa'
     },
-    heading:{
+    heading: {
         flexDirection: 'row',
         marginTop: 65,
         marginLeft: 35
@@ -112,13 +109,13 @@ const styles = StyleSheet.create({
         color: '#1C5B0B',
     },
     loginRegisterHeading1: {
-        marginTop:40,
+        marginTop: 40,
         marginLeft: -163,
         fontSize: 30,
         color: '#1C5B0B',
     },
     loginRegisterHeading2: {
-        marginTop:40,
+        marginTop: 40,
         fontSize: 30,
         color: '#1C5B0B',
     },
@@ -158,7 +155,7 @@ const styles = StyleSheet.create({
         paddingLeft: 70,
         paddingTop: 13,
         paddingRight: 90,
-        borderRadius:35,
+        borderRadius: 35,
     },
     buttonText1: {
         fontSize: 13,
@@ -175,7 +172,7 @@ const styles = StyleSheet.create({
     buttonContainer2: {
         marginLeft: 0,
         borderWidth: 0.1,
-        borderRadius:35,
+        borderRadius: 35,
         width: '80%',
         height: '15%',
         backgroundColor: 'rgb(223,234,228)',
@@ -191,9 +188,9 @@ const styles = StyleSheet.create({
         padding: 2,
         borderRadius: 5
     },
-      image: {
-    justifyContent: "center"
-  },
+    image: {
+        justifyContent: "center"
+    },
 })
 
 export default LoginPage;
