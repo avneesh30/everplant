@@ -1,48 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, ImageBackground, PermissionsAndroid } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Footer } from '../Footer';
 import * as RNFS from 'react-native-fs';
 
 const readData = async (setUserData) => {
-    try {
-        const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-            {
-                title: "Read Permission",
-                message:
-                    "App needs ypur permission to read file",
-                buttonNeutral: "Ask Me Later",
-                buttonNegative: "Cancel",
-                buttonPositive: "OK"
-            }
-        );
-        console.log(granted, "granted")
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            console.log("You can read the file");
+    
 
-            var path = RNFS.ExternalStorageDirectoryPath + '/data.json';
+            var path = RNFS.DocumentDirectoryPath + '/data.json';
             RNFS.readFile(path)
 
                 .then((success) => {
-                    console.log(RNFS.ExternalStorageDirectoryPath, "path")
+                    console.log(RNFS.DocumentDirectoryPath, "path")
                     console.log('read file', success);
                     setUserData(JSON.parse(success))
                 })
                 .catch((err) => {
-                    console.log(RNFS.ExternalStorageDirectoryPath, "path error")
+                    console.log(RNFS.DocumentDirectoryPath, "path error")
                     console.log(err.message);
                 });
-        } else {
-            console.log("Read permission denied");
-        }
-    } catch (err) {
-        console.warn(err);
-    }
-
-};
+        } 
 const loginValidation = Yup.object().shape({
     Email: Yup.string()
         .nullable()
@@ -65,7 +44,7 @@ const LoginPage = (props) => {
             flex: 1,
             flexDirection: 'column'
         }}>
-            <View style={{ flex: 1 }}>
+            <ScrollView style={{ flex: 1 }}>
                 <ImageBackground source={require('../images/login.jpg')} style={{ flex: 1, flexDirection: 'column', paddingHorizontal: 20 }}>
                     <View style={{ flex: .6, flexDirection: 'column', paddingVertical: 40 }}>
                         <Text style={styles.text1}>Welcome</Text>
@@ -130,7 +109,7 @@ const LoginPage = (props) => {
                                             </Text>
                                         </TouchableOpacity>
                                     </View>
-                                    <View style={[styles.buttonContainer1, { backgroundColor: 'rgb(223,234,228)' }]}>
+                                    <View style={[styles.buttonContainer1, { backgroundColor: 'rgb(223,234,228)', marginBottom: 95 }]}>
                                         <TouchableOpacity onPress={() => props.navigation.navigate("home")}>
                                             <Text style={styles.buttonText2}>
                                                 Back To Home
@@ -142,7 +121,7 @@ const LoginPage = (props) => {
                         }}
                     </Formik>
                 </ImageBackground>
-            </View>
+            </ScrollView>
             <Footer />
         </View>
     )

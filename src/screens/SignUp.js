@@ -18,81 +18,53 @@ import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'reac
 import * as RNFS from 'react-native-fs';
 
 const readData = async (setUserData) => {
-    try {
-        const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-            {
-                title: "Read Permission",
-                message:
-                    "App needs ypur permission to read file",
-                buttonNeutral: "Ask Me Later",
-                buttonNegative: "Cancel",
-                buttonPositive: "OK"
-            }
-        );
-        console.log(granted, "granted")
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            console.log("You can read the file");
+    // try {
+    //     const granted = await PermissionsAndroid.request(
+    //         PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+    //         {
+    //             title: "Read Permission",
+    //             message:
+    //                 "App needs ypur permission to read file",
+    //             buttonNeutral: "Ask Me Later",
+    //             buttonNegative: "Cancel",
+    //             buttonPositive: "OK"
+    //         }
+    //     );
+    //     console.log(granted, "granted")
+    //     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+    //         console.log("You can read the file");
 
-            var path = RNFS.ExternalStorageDirectoryPath + '/data.json';
+            var path = RNFS.DocumentDirectoryPath + '/data.json';
             RNFS.readFile(path)
 
                 .then((success) => {
-                    console.log(RNFS.ExternalStorageDirectoryPath, "path")
+                    console.log(RNFS.DocumentDirectoryPath, "path")
                     console.log('read file', success);
                     setUserData(JSON.parse(success));
                 })
                 .catch((err) => {
-                    console.log(RNFS.ExternalStorageDirectoryPath, "path error")
+                    console.log(RNFS.DocumentDirectoryPath, "path error")
                     console.log(err.message);
                 });
-        } else {
-            console.log("Read permission denied");
-        }
-    } catch (err) {
-        console.warn(err);
-    }
-
-};
+        } 
 const writeData = async (values) => {
-    try {
-        const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-            {
-                title: "Write Permission",
-                message:
-                    "App needs ypur permission to write file",
-                buttonNeutral: "Ask Me Later",
-                buttonNegative: "Cancel",
-                buttonPositive: "OK"
-            }
-        );
-        console.log(granted, "granted")
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            console.log("You can write the file", values);
+    
 
-            var path = RNFS.ExternalStorageDirectoryPath + '/data.json';
+            var path = RNFS.DocumentDirectoryPath + '/data.json';
             const data = JSON.stringify(values)
             console.log(data, "user")
             // readData();
             RNFS.writeFile(path, data, 'utf8')
 
                 .then((success) => {
-                    console.log(RNFS.ExternalStorageDirectoryPath, "path")
+                    console.log(RNFS.DocumentDirectoryPath, "path")
                     console.log('FILE WRITTEN!');
                 })
                 .catch((err) => {
-                    console.log(RNFS.ExternalStorageDirectoryPath, "path error")
+                    console.log(RNFS.DocumentDirectoryPath, "path error")
                     console.log(err.message);
                 });
-        } else {
-            console.log("write permission denied");
         }
-    } catch (err) {
-        console.warn(err);
-    }
-
-};
 
 const data = [
 
@@ -159,16 +131,19 @@ const SignUp = (props) => {
                         }}
                         validationSchema={registrationValidation}
                         onSubmit={(values) => {
+                            console.log(values, "users");
                             setTimeout(() => {
+                                // dbService.signupSave(values)
                                 const userDataTemp = [...userData];
                                 const isExist = userDataTemp.some(item => {
-                                    return item.Email.toLowerCase() === values.Email.toLowerCase()
-                                })
-                                if (!isExist) {
-                                    userDataTemp.push(values);
-                                    writeData(userDataTemp);
-                                    setUserData(userDataTemp);
-                                }
+                                    console.log(item.Email, "item email")
+                                    console.log(values.Email, "values Email")
+                                    return item.Email.toLowerCase() === values.Email.toLowerCase()})
+                                    if(!isExist) {
+                                        userDataTemp.push(values);
+                                        writeData(userDataTemp);
+                                        setUserData(userDataTemp);
+                                    }
                                 alert('User registered successfully')
                                 props.navigation.navigate("login")
                             }, 500)
@@ -215,8 +190,8 @@ const SignUp = (props) => {
                                     }
                                     <DatePicker
                                         style={styles.datePicker}
-                                        date={date}
-                                        mode="date"
+                                        date={date} 
+                                        mode="date" 
                                         placeholder="Select date"
                                         name="Date"
                                         value={values.Date}

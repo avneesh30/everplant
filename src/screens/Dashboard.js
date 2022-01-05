@@ -7,7 +7,7 @@ import {
     ImageBackground,
     ScrollView,
     Image,
-    TouchableHighlight,
+    TouchableOpacity,
     Dimensions
 } from 'react-native';
 import { Footer } from '../Footer';
@@ -28,12 +28,14 @@ const Dashboard = (props) => {
                 <Header />
                 <View style={{ backgroundColor: 'white', flexDirection: 'row', flexWrap: 'wrap', display: 'flex' }}>
                     {Plants.map(post => {
-                        const { image, text1, text2 } = post;
+                        const { id, image, text1, text2 } = post;
 
-                        return <View style={{ backgroundColor: '#e8e8e8', alignItems: 'center', alignContent: 'center', height: 200, margin: 4, width: (width - 16) / 2 }}>
+                        return <View style={{ backgroundColor: '#e8e8e8', alignItems: 'center', alignContent: 'center', height: 200, margin: 4, width: (width - 16) / 2 }} id={id}>
                             <Image source={Icons[image]} style={{ width: 70, height: 70 }} />
-                            <Text style={styles.GridViewTextLayout}>{text1}</Text>
-                            <Text style={styles.GridViewTextLayout}>{text2}</Text>
+                            <TouchableOpacity onPress={() => props.navigation.navigate("details", {briefJson: post})}>
+                                <Text style={styles.GridViewTextLayout}>{text1}</Text>
+                                <Text style={styles.GridViewTextLayout}>{text2}</Text>
+                            </TouchableOpacity>
                         </View>
                     })}
                 </View>

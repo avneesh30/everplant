@@ -2,6 +2,7 @@ import React from 'react';
 import LandingPage from './screens/LandingPage';
 import LoginPage from './screens/Login';
 import SignUp from './screens/SignUp';
+import Details from './screens/Details';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Dashboard from './screens/Dashboard';
@@ -38,6 +39,11 @@ const App = (props) => {
         <Stack.Screen
           name="dashboard"
           component={Dashboard}
+          options={{ title: '', headerShown: false }}
+        />
+        <Stack.Screen
+          name="details"
+          component={Details}
           options={{ title: '', headerShown: false }}
         />
       </Stack.Navigator>

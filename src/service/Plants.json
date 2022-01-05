@@ -1,38 +1,68 @@
 [
     {
-        "id" : 1,
-        "image"   : "Cactus",
-        "text1"   : "Cactus Plant",
-        "text2"   : "(Length: 2-3 ft.)"
+        "id": 1,
+        "image": "Cactus",
+        "text1": "Cactus Plant",
+        "text2": "(Length: 2-3 ft.)",
+        "picture": "Cac",
+        "title": "Cactus Plant",
+        "line1": "Cacti plants play",
+        "line2": "a critical role in",
+        "line3": "our day-to-day lives."
     },
     {
-        "id" : 2,
-        "image"   : "BP",
-        "text1"   : "Bonsai Plant",
-        "text2"   : "(Length: 6 in - 3 ft.)"
+        "id": 2,
+        "image": "BP",
+        "text1": "Bonsai Plant",
+        "text2": "(Length: 6 in - 3 ft.)",
+        "picture": "Bonsai",
+        "title": "Bonsai Plant",
+        "line1": "Bonsai plants are",
+        "line2": "highly loved around the",
+        "line3": "globe for many different reason."
     },
     {
-        "id" : 3,
-        "image"   : "OP",
-        "text1"   : "Ornamental Plant",
-        "text2"   : "(Length: 2-3 ft.)"
+        "id": 3,
+        "image": "OP",
+        "text1": "Ornamental Plant",
+        "text2": "(Length: 2-3 ft.)",
+        "picture": "Ornamental",
+        "title": "Ornamental Plant",
+        "line1": "Ornamental plants include all plants",
+        "line2": "whether they are in the form",
+        "line3": "of herbs, vines, shrubs, or trees,"
     },
     {
-        "id" : 4,
-        "image"   : "FP",
-        "text1"   : "Flowering Plant",
-        "text2"   : "(Length: 1-2 ft.)"
+        "id": 4,
+        "image": "FP",
+        "text1": "Flowering Plant",
+        "text2": "(Length: 1-2 ft.)",
+        "picture": "Flower",
+        "title": "Flowering Plant",
+        "line1": "Flowering plants are very",
+        "line2": "much attractive and heart-stealing",
+        "line3": "because their mind-blowing fragrance"
     },
     {
-        "id" : 5,
-        "image"   : "HP",
-        "text1"   : "Herbs Plant",
-        "text2"   : "(Length: 30-150 cm.)"
+        "id": 5,
+        "image": "HP",
+        "text1": "Herbs Plant",
+        "text2": "(Length: 30-150 cm.)",
+        "picture": "Herb",
+        "title": "Herbs Plant",
+        "line1": "Herbs are the plants with savoury",
+        "line2": "or aromatic belongings whose leaves",
+        "line3": "or seeds are used for medical purposes"
     },
     {
-        "id" : 6,
-        "image"   : "AP",
-        "text1"   : "Air Purifying Plant",
-        "text2"   : "(Length: upto 1 ft..)"
+        "id": 6,
+        "image": "AP",
+        "text1": "Air Purifying Plant",
+        "text2": "(Length: upto 1 ft..)",
+        "picture": "Air",
+        "title": "Air Purifying Plant",
+        "line1": "Research has shown that plants",
+        "line2": "contain the ability to remove harmful",
+        "line3": "contaminants from the air."
     }
 ]
