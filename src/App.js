@@ -1,19 +1,11 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
 import React from 'react';
 import LandingPage from './screens/LandingPage';
 import LoginPage from './screens/Login';
 import SignUp from './screens/SignUp';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-
-
+import Dashboard from './screens/Dashboard';
+import Cactus from './screens/Cactus';
 
 const Stack = createStackNavigator();
 
@@ -33,9 +25,19 @@ const App = (props) => {
           component={LoginPage}
           options={{ title: '', headerShown: false }}
         />
-         <Stack.Screen
+        <Stack.Screen
           name="signup"
           component={SignUp}
+          options={{ title: '', headerShown: false }}
+        />
+        <Stack.Screen
+          name="cactus"
+          component={Cactus}
+          options={{ title: '', headerShown: false }}
+        />
+        <Stack.Screen
+          name="dashboard"
+          component={Dashboard}
           options={{ title: '', headerShown: false }}
         />
       </Stack.Navigator>

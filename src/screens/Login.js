@@ -1,12 +1,48 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Button, ImageBackground } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TextInput, ImageBackground, PermissionsAndroid } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Footer } from '../Footer';
+import * as RNFS from 'react-native-fs';
 
-const image = { uri: "https://i.pinimg.com/originals/c2/f2/f6/c2f2f63868aa3d12c1b4519dc0f42fac.jpg" }
+const readData = async (setUserData) => {
+    try {
+        const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+            {
+                title: "Read Permission",
+                message:
+                    "App needs ypur permission to read file",
+                buttonNeutral: "Ask Me Later",
+                buttonNegative: "Cancel",
+                buttonPositive: "OK"
+            }
+        );
+        console.log(granted, "granted")
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            console.log("You can read the file");
 
+            var path = RNFS.ExternalStorageDirectoryPath + '/data.json';
+            RNFS.readFile(path)
+
+                .then((success) => {
+                    console.log(RNFS.ExternalStorageDirectoryPath, "path")
+                    console.log('read file', success);
+                    setUserData(JSON.parse(success))
+                })
+                .catch((err) => {
+                    console.log(RNFS.ExternalStorageDirectoryPath, "path error")
+                    console.log(err.message);
+                });
+        } else {
+            console.log("Read permission denied");
+        }
+    } catch (err) {
+        console.warn(err);
+    }
+
+};
 const loginValidation = Yup.object().shape({
     Email: Yup.string()
         .nullable()
@@ -19,143 +55,125 @@ const loginValidation = Yup.object().shape({
 });
 
 const LoginPage = (props) => {
+    const [userData, setUserData] = useState([])
 
+    useEffect(() => {
+        readData(setUserData);
+    }, [])
     return (
-        <View style={styles.loginContainer}>
-            <ImageBackground source={require('../images/login.jpg')} resizeMode="cover" style={styles.image}>
-                <View style={styles.heading}>
-                    <Text style={styles.loginRegisterHeading}>Welcome</Text>
-                    <Text style={styles.loginRegisterHeading1}>Log</Text>
-                    <Text style={styles.loginRegisterHeading2}>In</Text>
-                </View>
-                <Formik
-                    initialValues={{
-                        Email: '',
-                        Password: '',
-                    }}
-                    validationSchema={loginValidation}
-                    onSubmit={(values) => {
-                        console.log(values, "users");
-                        setTimeout(() => {
-                            alert('User registered successfully')
-                        }, 500)
-                    }}
-                >
-                    {({ errors, values, touched, handleSubmit, setFieldValue }) => {
-                        console.log(values, 'values')
-
-                        return <View style={styles.mainContainer}>
-
-                            <View style={styles.container}>
-                                <TextInput
-                                    style={styles.emailInput}
-                                    placeholder="Email"
-                                    placeholderTextColor="#EEEEEE"
-                                    value={values.Email}
-                                    name="Email"
-                                    onChangeText={(text) => setFieldValue('Email', text)}
-                                />
-                                {errors.Email && touched.Email &&
-                                    <Text style={styles.error}>{errors.Email}</Text>
+        <View style={{
+            flex: 1,
+            flexDirection: 'column'
+        }}>
+            <View style={{ flex: 1 }}>
+                <ImageBackground source={require('../images/login.jpg')} style={{ flex: 1, flexDirection: 'column', paddingHorizontal: 20 }}>
+                    <View style={{ flex: .6, flexDirection: 'column', paddingVertical: 40 }}>
+                        <Text style={styles.text1}>Welcome</Text>
+                        <Text style={styles.text2}>LogIn</Text>
+                    </View>
+                    <Formik
+                        initialValues={{
+                            Email: '',
+                            Password: '',
+                        }}
+                        validationSchema={loginValidation}
+                        onSubmit={(values) => {
+                            setTimeout(() => {
+                                const userDataTemp = [...userData];
+                                setUserData(userDataTemp)
+                                const isExist = userDataTemp.some(item => {
+                                    return item.Email === values.Email && item.Password === values.Password
+                                })
+                                if (!isExist) {
+                                    alert("Invalid Email or Password")
                                 }
-                                <TextInput
-                                    style={styles.passwordInput}
-                                    placeholder="Password"
-                                    placeholderTextColor="#EEEEEE"
-                                    value={values.Password}
-                                    name="Password"
-                                    onChangeText={(text) => setFieldValue('Password', text)}
-                                />
-                                {errors.Password && touched.Password &&
-                                    <Text style={styles.error}> {errors.Password}</Text>
+                                else {
+                                    props.navigation.navigate("dashboard")
                                 }
-                                <View style={styles.buttonContainer1}>
-                                    <TouchableOpacity onPress={handleSubmit}>
-                                        <Text style={styles.buttonText1}>
-                                            Log In
-                                        </Text>
-                                    </TouchableOpacity>
+                            }, 500)
+
+                        }}
+                    >
+                        {({ errors, values, touched, handleSubmit, setFieldValue }) => {
+                            console.log(values, 'values')
+                            return <View style={{ flex: 2.5, marginLeft: 30, flexDirection: 'column', paddingVertical: 10 }}>
+                                <View style={{ justifyContent: 'center', flexDirection: 'column', paddingVertical: 10 }}>
+                                    <TextInput
+                                        style={styles.emailInput}
+                                        placeholder="Email"
+                                        placeholderTextColor="#EEEEEE"
+                                        value={values.Name}
+                                        name="Email"
+                                        onChangeText={(text) => setFieldValue('Email', text)}
+                                    />
+                                    {errors.Email && touched.Email &&
+                                        <Text style={styles.error}>{errors.Email}</Text>
+                                    }
+                                    <TextInput
+                                        style={styles.passwordInput}
+                                        placeholder="Password"
+                                        placeholderTextColor="#EEEEEE"
+                                        value={values.Password}
+                                        secureTextEntry
+                                        name="Password"
+                                        onChangeText={(text) => setFieldValue('Password', text)}
+                                    />
+                                    {errors.Password && touched.Password &&
+                                        <Text style={styles.error}>{errors.Password}</Text>
+                                    }
                                 </View>
-                                <View style={styles.buttonContainer2}>
-                                    <TouchableOpacity onPress={() => props.navigation.navigate("home")}>
-                                        <Text style={styles.buttonText2}>
-                                            Back To Home
-                                        </Text>
-                                    </TouchableOpacity>
+                                <View style={{ flex: .9, flexDirection: 'column', paddingVertical: 20 }}>
+                                    <View style={styles.buttonContainer1}>
+                                        <TouchableOpacity onPress={handleSubmit}>
+                                            <Text style={styles.buttonText1}>
+                                                Log In
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={[styles.buttonContainer1, { backgroundColor: 'rgb(223,234,228)' }]}>
+                                        <TouchableOpacity onPress={() => props.navigation.navigate("home")}>
+                                            <Text style={styles.buttonText2}>
+                                                Back To Home
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
                             </View>
-                        </View>
-                    }}
-                </Formik>
-            </ImageBackground>
+                        }}
+                    </Formik>
+                </ImageBackground>
+            </View>
             <Footer />
         </View>
     )
 }
-
 const styles = StyleSheet.create({
-    loginContainer: {
-        flex: 1,
-        backgroundColor: '#f5fffa'
-    },
-    heading: {
-        flexDirection: 'row',
-        marginTop: 65,
-        marginLeft: 35
-    },
-    loginRegisterHeading: {
-        marginLeft: 5,
+
+    text1: {
+        color: '#fff',
         fontSize: 30,
-        color: '#1C5B0B',
+        color: '#1C5B0B'
     },
-    loginRegisterHeading1: {
-        marginTop: 40,
-        marginLeft: -163,
+    text2: {
+        color: '#fff',
         fontSize: 30,
-        color: '#1C5B0B',
-    },
-    loginRegisterHeading2: {
-        marginTop: 40,
-        fontSize: 30,
-        color: '#1C5B0B',
-    },
-    mainContainer: {
-        marginTop: 50
-    },
-    container: {
-        marginLeft: 50,
-        marginTop: 20
+        color: '#1C5B0B'
     },
     passwordInput: {
         width: '80%',
         height: 40,
-        marginTop: 50,
         color: 'grey',
-        paddingLeft: 4,
+        marginVertical: 15,
         borderBottomWidth: 1.9,
         borderBottomColor: '#D3D3D3',
     },
     emailInput: {
         height: 40,
         width: '80%',
-        marginTop: 5,
+        marginVertical: 15,
         color: 'grey',
-        paddingLeft: 4,
         borderBottomWidth: 1.9,
         borderBottomColor: '#D3D3D3',
-    },
-    buttonContainer1: {
-        marginLeft: 0,
-        borderWidth: 0.1,
-        width: '80%',
-        height: '15%',
-        marginTop: 50,
-        marginBottom: 30,
-        backgroundColor: 'rgb(0,85,46)',
-        paddingLeft: 70,
-        paddingTop: 13,
-        paddingRight: 90,
-        borderRadius: 35,
     },
     buttonText1: {
         fontSize: 13,
@@ -169,28 +187,18 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         fontWeight: 'bold'
     },
-    buttonContainer2: {
-        marginLeft: 0,
-        borderWidth: 0.1,
+    buttonContainer1: {
+        width: '85%',
+        marginBottom: 25,
+        backgroundColor: 'rgb(0,85,46)',
+        paddingHorizontal: 15,
+        paddingVertical: 10,
         borderRadius: 35,
-        width: '80%',
-        height: '15%',
-        backgroundColor: 'rgb(223,234,228)',
-        paddingLeft: 30,
-        paddingTop: 13,
-        paddingRight: 20,
     },
-
     error: {
         color: '#f00',
-        fontSize: 10,
-        marginTop: 2,
-        padding: 2,
-        borderRadius: 5
-    },
-    image: {
-        justifyContent: "center"
+        fontSize: 9,
+        marginTop: -5
     },
 })
-
 export default LoginPage;

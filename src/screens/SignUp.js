@@ -6,29 +6,103 @@ import {
     TextInput,
     View,
     ImageBackground,
-    ScrollView
+    ScrollView,
+    PermissionsAndroid
 } from 'react-native';
 import DatePicker from 'react-native-datepicker';
-import RadioButtonRN from 'radio-buttons-react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { Footer } from '../Footer';
 import RNPickerSelect from 'react-native-picker-select';
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
+import * as RNFS from 'react-native-fs';
 
+const readData = async (setUserData) => {
+    try {
+        const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+            {
+                title: "Read Permission",
+                message:
+                    "App needs ypur permission to read file",
+                buttonNeutral: "Ask Me Later",
+                buttonNegative: "Cancel",
+                buttonPositive: "OK"
+            }
+        );
+        console.log(granted, "granted")
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            console.log("You can read the file");
 
-var radio_props = [
-    { label: 'param1', value: 0 },
-    { label: 'param2', value: 1 }
-];
+            var path = RNFS.ExternalStorageDirectoryPath + '/data.json';
+            RNFS.readFile(path)
+
+                .then((success) => {
+                    console.log(RNFS.ExternalStorageDirectoryPath, "path")
+                    console.log('read file', success);
+                    setUserData(JSON.parse(success));
+                })
+                .catch((err) => {
+                    console.log(RNFS.ExternalStorageDirectoryPath, "path error")
+                    console.log(err.message);
+                });
+        } else {
+            console.log("Read permission denied");
+        }
+    } catch (err) {
+        console.warn(err);
+    }
+
+};
+const writeData = async (values) => {
+    try {
+        const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+            {
+                title: "Write Permission",
+                message:
+                    "App needs ypur permission to write file",
+                buttonNeutral: "Ask Me Later",
+                buttonNegative: "Cancel",
+                buttonPositive: "OK"
+            }
+        );
+        console.log(granted, "granted")
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            console.log("You can write the file", values);
+
+            var path = RNFS.ExternalStorageDirectoryPath + '/data.json';
+            const data = JSON.stringify(values)
+            console.log(data, "user")
+            // readData();
+            RNFS.writeFile(path, data, 'utf8')
+
+                .then((success) => {
+                    console.log(RNFS.ExternalStorageDirectoryPath, "path")
+                    console.log('FILE WRITTEN!');
+                })
+                .catch((err) => {
+                    console.log(RNFS.ExternalStorageDirectoryPath, "path error")
+                    console.log(err.message);
+                });
+        } else {
+            console.log("write permission denied");
+        }
+    } catch (err) {
+        console.warn(err);
+    }
+
+};
+
 const data = [
 
     {
-        label: 'Male'
+        label: 'Male',
+        value: 'Male'
     },
     {
-        label: 'Female'
+        label: 'Female',
+        value: 'Female'
     }
 ];
 
@@ -54,17 +128,25 @@ const registrationValidation = Yup.object().shape({
 });
 
 const SignUp = (props) => {
+    const [userData, setUserData] = useState([])
     const [date, setDate] = useState('');
+    useEffect(() => {
+        readData(setUserData);
+    }, [])
     const placeholder = {
         label: 'Select qualification',
         value: null,
     };
+    console.log(userData, "user data");
     return (
-        <View style={styles.signUpContainer}>
-            <ScrollView>
-                <ImageBackground source={require('../images/signUpBAckground.jpg')} resizeMode="cover" style={styles.image}>
-                    <View style={styles.heading}>
-                        <Text style={styles.SignUpHeading1}>Create Account</Text>
+        <View style={{
+            flex: 1,
+            flexDirection: 'column'
+        }}>
+            <ScrollView style={{ flex: 1 }}>
+                <ImageBackground source={require('../images/signUpBAckground.jpg')} style={{ flex: 1, flexDirection: 'column', paddingHorizontal: 20 }}>
+                    <View style={{ flex: .6, flexDirection: 'column', paddingVertical: 40 }}>
+                        <Text style={styles.text1}>Create Account</Text>
                     </View>
                     <Formik
                         initialValues={{
@@ -74,22 +156,29 @@ const SignUp = (props) => {
                             Date: '',
                             Gender: '',
                             Qualification: ''
-
                         }}
                         validationSchema={registrationValidation}
                         onSubmit={(values) => {
-                            console.log(values, "users");
                             setTimeout(() => {
+                                const userDataTemp = [...userData];
+                                const isExist = userDataTemp.some(item => {
+                                    return item.Email.toLowerCase() === values.Email.toLowerCase()
+                                })
+                                if (!isExist) {
+                                    userDataTemp.push(values);
+                                    writeData(userDataTemp);
+                                    setUserData(userDataTemp);
+                                }
                                 alert('User registered successfully')
+                                props.navigation.navigate("login")
                             }, 500)
                         }}
                     >
                         {({ errors, values, touched, handleSubmit, setFieldValue }) => {
-                            console.log(values, 'values')
 
-                            return <View style={styles.mainContainer}>
+                            return <View style={{ flex: 2.5, marginLeft: 15, flexDirection: 'column', paddingVertical: 10 }}>
 
-                                <View style={styles.container}>
+                                <View style={{ justifyContent: 'center', flexDirection: 'column', paddingVertical: 10 }}>
                                     <TextInput
                                         style={styles.nameInput}
                                         placeholder="Full Name"
@@ -115,20 +204,19 @@ const SignUp = (props) => {
                                     <TextInput
                                         style={styles.passwordInput}
                                         placeholder="Password"
-
                                         placeholderTextColor="grey"
                                         value={values.Password}
+                                        secureTextEntry
                                         name="Password"
                                         onChangeText={(text) => setFieldValue('Password', text)}
-                                        keyboardType="password"
                                     />
                                     {errors.Password && touched.Password &&
                                         <Text style={styles.error}>{errors.Password}</Text>
                                     }
                                     <DatePicker
                                         style={styles.datePicker}
-                                        date={date} // Initial date from state
-                                        mode="date" // The enum of date, datetime and time
+                                        date={date}
+                                        mode="date"
                                         placeholder="Select date"
                                         name="Date"
                                         value={values.Date}
@@ -148,7 +236,7 @@ const SignUp = (props) => {
                                             },
                                             dateInput: {
                                                 marginLeft: -115,
-                                                marginTop: -10, 
+                                                marginTop: -10,
                                                 border: 0,
                                                 borderRadius: 0,
                                                 borderColor: '#D3D3D3',
@@ -170,14 +258,16 @@ const SignUp = (props) => {
                                     <RadioForm
                                         name="Gender"
                                         style={styles.radiobtn}
+                                        initial={-1}
+                                        value={values.Gender}
                                         formHorizontal={true}
                                         labelHorizontal={true}
                                         radio_props={data}
                                         buttonColor={'#EEE'}
                                         buttonSize={20}
-                                        selectedBtn={(e) => console.log(e)}
                                         buttonOuterSize={25}
                                         onPress={(label) => {
+                                            console.log(label, "gender")
                                             setFieldValue('Gender', label)
                                         }}
                                     />
@@ -189,9 +279,12 @@ const SignUp = (props) => {
                                         style={pickerSelectStyles.inputAndroid}
                                         placeholder={placeholder}
                                         name="Qualification"
-                                        onValueChange={(value) => console.log(value)}
+                                        value={values.Qualification}
+                                        onValueChange={(value) => {
+                                            setFieldValue('Qualification', value)
+                                            console.log(value)
+                                        }}
                                         style={{
-
                                             placeholderText: {
                                                 color: 'black'
                                             },
@@ -203,20 +296,24 @@ const SignUp = (props) => {
                                             { label: 'Docterate', value: 'Docterate' },
                                         ]}
                                     />
-                                    {errors.Gender && touched.Gender &&
-                                        <Text style={styles.error}>{errors.Gender}</Text>
+                                    {errors.Qualification && touched.Qualification &&
+                                        <Text style={styles.error}>{errors.Qualification}</Text>
                                     }
-                                    <View style={styles.buttonContainer}>
-                                        <TouchableOpacity style={styles.buttonContainer1} onPress={handleSubmit}>
-                                            <Text style={styles.buttonText1}>
-                                                Sign Up
-                                            </Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity style={styles.buttonContainer2} onPress={() => props.navigation.navigate("home")}>
-                                            <Text style={styles.buttonText2}>
-                                                Home
-                                            </Text>
-                                        </TouchableOpacity>
+                                    <View style={{ flex: .9, flexDirection: 'row', paddingVertical: 20 }}>
+                                        <View style={styles.buttonContainer1}>
+                                            <TouchableOpacity onPress={handleSubmit}>
+                                                <Text style={styles.buttonText1}>
+                                                    Sign Up
+                                                </Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                        <View style={styles.buttonContainer2}>
+                                            <TouchableOpacity onPress={() => props.navigation.navigate("home")}>
+                                                <Text style={styles.buttonText2}>
+                                                    Home
+                                                </Text>
+                                            </TouchableOpacity>
+                                        </View>
                                     </View>
                                 </View>
                             </View>
@@ -231,40 +328,11 @@ const SignUp = (props) => {
 }
 
 const styles = StyleSheet.create({
-    signUpContainer: {
-        flex: 1,
-        backgroundColor: '#f5fffa',
 
-    },
-    image: {
-        justifyContent: "center",
-
-    },
-    heading: {
-        flexDirection: 'row',
-        marginTop: 20,
-        marginLeft: 35
-    },
-    SignUpHeading1: {
-        marginLeft: 6,
+    text1: {
+        color: '#fff',
         fontSize: 30,
-        color: '#0E5135',
-        marginTop: 30
-    },
-    picker: {
-        height: 40,
-        color: 'grey',
-        width: '70%',
-        borderWidth: 5,
-        borderColor: 'black',
-    },
-    mainContainer: {
-        height: '85%',
-        marginTop: 45
-    },
-    container: {
-        marginLeft: 50,
-        marginTop: 20
+        color: '#1C5B0B'
     },
     passwordInput: {
         width: '80%',
@@ -289,27 +357,12 @@ const styles = StyleSheet.create({
     nameInput: {
         width: '80%',
         height: 40,
-        color: '#ebebeb',
+        color: 'grey',
         paddingLeft: 4,
         marginLeft: 5,
         borderBottomWidth: 1.9,
         borderBottomColor: '#D3D3D3',
         marginTop: 0
-    },
-    dobInput: {
-        width: '80%',
-        height: 40,
-        color: '#ebebeb',
-        paddingLeft: 4,
-        marginLeft: 5,
-        borderBottomWidth: 1.9,
-        borderBottomColor: '#D3D3D3',
-        marginTop: 20
-    },
-    date: {
-        marginTop: 20,
-        color: 'grey',
-        marginLeft: 5
     },
     datePicker: {
         width: '80%',
@@ -331,6 +384,13 @@ const styles = StyleSheet.create({
         display: 'flex',
         width: '80%',
         marginLeft: 9,
+    },
+    picker: {
+        height: 40,
+        color: 'grey',
+        width: '70%',
+        borderWidth: 5,
+        borderColor: 'black',
     },
     qualification: {
         marginTop: 20,
@@ -386,8 +446,6 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         position: 'relative'
     },
-
-
 })
 const pickerSelectStyles = StyleSheet.create({
     inputAndroid: {
